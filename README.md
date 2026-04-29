@@ -1,68 +1,57 @@
-# Real Estate Management Database System
+# Real Estate Database Management System (DBMS)
 
-A comprehensive web-based Real Estate Management Database System. It demonstrates the use of a relational database schema designed in 3NF and provides an interactive UI to manage and track properties, bookings, payments, and users.
+A production-ready, full-stack Real Estate Management System built with **Node.js**, **Express**, and **MySQL**. This project features a normalized 3NF schema, RESTful API integration, and dynamic dashboard visualizations.
 
-## Features
+## 🌐 Live Website
+**[View Live Demo Here](https://github.com/Daksh-cpu/DBMS-Mini-Project)** *(Update this link after deploying to Render/Railway)*
 
-- **Dashboard**: High-level overview of real estate operations, top-performing properties, and recent bookings.
-- **Properties Catalog**: View, filter, and add residential and commercial properties.
-- **Booking Management**: Full lifecycle tracking of property bookings (Purchase, Rent, Site Visit).
-- **Payment Processing**: Record payment installments linked to specific bookings.
-- **User & Role Management**: RBAC with 'buyer', 'tenant', 'agent', and 'admin' roles.
-- **Analytics**: Visualizations for revenue distributions and location performance.
-- **SQL Reference**: Interactive code viewer containing schema setup, and pre-written analytic SQL queries.
+### 📊 Dashboard Preview
+![Dashboard Preview](https://cortex-storage.s3.us-west-2.amazonaws.com/brain/fd93a0d2-20a5-43ed-9ed8-a402721a4fa0/input_file_0.png)
 
-## Technologies Used
+### 📈 Analytics & Insights
+![Analytics Preview](https://cortex-storage.s3.us-west-2.amazonaws.com/brain/fd93a0d2-20a5-43ed-9ed8-a402721a4fa0/input_file_1.png)
 
-- **Frontend**: HTML5, CSS3 (Custom Properties, Flexbox, CSS Grid), Vanilla JavaScript.
-- **Charts**: Chart.js for data visualization.
-- **Database (Simulated & Schema)**: In-memory JavaScript database for UI simulation, along with fully normalized MySQL schemas for production implementation.
+## 🚀 Key Features
 
-## Project Structure
+- **Full CRUD Operations**: Manage Properties, Bookings, Users, Agents, Owners, and Locations.
+- **Dynamic Analytics**: Real-time charts for Revenue by Type and Booking Distributions using Chart.js.
+- **MySQL Backend**: Normalized 3NF schema with foreign key constraints and ACID transaction support.
+- **Automated Seeding**: One-click "Load Sample Data" to reset and populate the database.
+- **Modern UI**: Dark-themed, glassmorphic design with DM Sans typography and responsive layouts.
 
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, Vanilla CSS3, JavaScript (ES6+), Chart.js
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL (relational)
+- **Dependencies**: `mysql2`, `cors`, `dotenv`, `express`
+
+## 🏁 Quick Start
+
+### 1. Prerequisites
+- **Node.js** (LTS version recommended)
+- **MySQL Server** (running locally or remotely)
+
+### 2. Environment Configuration
+Create a `.env` file in the root directory:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=real_estate_db
+PORT=3000
 ```
-.
-├── css/
-│   └── styles.css
-├── js/
-│   └── app.js
-├── sql/
-│   ├── 01_schema.sql
-│   ├── 02_seed_data.sql
-│   ├── 03_query_full_listing.sql
-│   ├── 04_query_revenue_by_type.sql
-│   ├── 05_query_top_agents_and_ratings.sql
-│   └── 06_transaction_acid_booking.sql
-├── preview_images/
-│   ├── dashboard.png
-│   └── analytics.png
-└── index.html
+
+### 3. Installation
+```bash
+npm install
 ```
 
-## Preview Images
+### 4. Run the Server
+```bash
+npm start
+```
+The server will automatically initialize the database schema and seed data on first run.
 
-### Dashboard
-![Dashboard](./preview_images/dashboard.png)
-
-### Analytics
-![Analytics](./preview_images/analytics.png)
-
-## Getting Started
-
-To run the frontend simulation locally:
-1. Clone the repository.
-2. Open `index.html` in any modern web browser.
-3. Click on the **"Load Sample Data"** button to populate the UI with demonstration records.
-
-To setup the actual database:
-1. Install MySQL (version 8+ recommended).
-2. Execute the scripts in the `sql/` directory sequentially, starting from `01_schema.sql`.
-
-## Database Design
-
-The system implements a normalized 3NF relational structure containing 9 main tables:
-- `USERS`, `LOCATIONS`, `PROPERTY_TYPES`, `OWNERS`, `AGENTS`
-- `PROPERTIES` (Central hub with multiple FKs)
-- `BOOKINGS`, `PAYMENTS`, `REVIEWS`
-
-Includes appropriate constraints (UNIQUE, CHECK), ON DELETE cascades, and optimized indexes.
+---
+**Mini Project · IT Department · DBMS Lab**
