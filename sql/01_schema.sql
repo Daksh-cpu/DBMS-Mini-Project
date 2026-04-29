@@ -1,11 +1,17 @@
 -- 01_schema.sql
 -- Real Estate Management Database Schema (MySQL 8+)
 
-CREATE DATABASE IF NOT EXISTS real_estate_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE real_estate_db;
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS properties;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS agents;
+DROP TABLE IF EXISTS owners;
+DROP TABLE IF EXISTS property_types;
+DROP TABLE IF EXISTS locations;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,7 +51,7 @@ CREATE TABLE IF NOT EXISTS owners (
   phone VARCHAR(15),
   owner_type ENUM('Individual', 'Builder') NOT NULL,
   city VARCHAR(80),
-  joined_date DATE NOT NULL DEFAULT (CURRENT_DATE)
+  joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS agents (
@@ -55,7 +61,7 @@ CREATE TABLE IF NOT EXISTS agents (
   phone VARCHAR(15),
   agency_name VARCHAR(120),
   license_no VARCHAR(50) NOT NULL UNIQUE,
-  joined_date DATE NOT NULL DEFAULT (CURRENT_DATE)
+  joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS properties (
@@ -94,7 +100,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   booking_id INT AUTO_INCREMENT PRIMARY KEY,
   property_id INT NOT NULL,
   user_id INT NOT NULL,
-  booking_date DATE NOT NULL DEFAULT (CURRENT_DATE),
+  booking_date DATE NOT NULL,
   booking_type ENUM('Purchase', 'Rent', 'SiteVisit') NOT NULL,
   total_amount DECIMAL(14,2) NOT NULL DEFAULT 0,
   status ENUM('Pending', 'Confirmed', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Pending',
