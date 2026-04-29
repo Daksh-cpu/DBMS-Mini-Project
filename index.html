@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Estate Management Database System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🏢</div>
+    <div class="logo-text">RealEstate DBMS</div>
+    <div class="logo-sub">Mini Project · IT Dept</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('properties')">
+      <span class="nav-icon">🏠</span> Properties
+      <span class="nav-badge" id="badge-properties">0</span>
+    </div>
+    <div class="nav-item" onclick="showPage('bookings')">
+      <span class="nav-icon">📋</span> Bookings
+      <span class="nav-badge" id="badge-bookings">0</span>
+    </div>
+    <div class="nav-item" onclick="showPage('payments')">
+      <span class="nav-icon">💳</span> Payments
+    </div>
+    <div class="nav-item" onclick="showPage('reviews')">
+      <span class="nav-icon">⭐</span> Reviews
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Management</div>
+    <div class="nav-item" onclick="showPage('users')">
+      <span class="nav-icon">👤</span> Users
+    </div>
+    <div class="nav-item" onclick="showPage('agents')">
+      <span class="nav-icon">🤝</span> Agents
+    </div>
+    <div class="nav-item" onclick="showPage('owners')">
+      <span class="nav-icon">🔑</span> Owners
+    </div>
+    <div class="nav-item" onclick="showPage('locations')">
+      <span class="nav-icon">📍</span> Locations
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Insights</div>
+    <div class="nav-item" onclick="showPage('analytics')">
+      <span class="nav-icon">📈</span> Analytics
+    </div>
+    <div class="nav-item" onclick="showPage('sql')">
+      <span class="nav-icon">🗄️</span> SQL Queries
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="db-status">
+      <div class="status-dot"></div>
+      <span>MySQL · InnoDB · 3NF</span>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="topbar-title">Dashboard</div>
+      <div class="page-subtitle" id="topbar-sub">Real Estate Management Database System Overview</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="loadSampleData()">📦 Load Sample Data</button>
+      <button class="btn btn-primary btn-sm" onclick="showAddModal()">+ Add Record</button>
+    </div>
+  </div>
+
+  <div class="page-content active" id="page-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon">🏠</div>
+        <div class="stat-value" id="stat-properties">0</div>
+        <div class="stat-label">Total Properties</div>
+        <div class="stat-change">↑ Active listings</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="stat-bookings">0</div>
+        <div class="stat-label">Total Bookings</div>
+        <div class="stat-change">↑ All statuses</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" id="stat-revenue">₹0</div>
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-change">↑ Confirmed + Completed</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="stat-users">0</div>
+        <div class="stat-label">Registered Users</div>
+        <div class="stat-change">↑ All roles</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏆 Top Revenue-Generating Properties</div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Property</th><th>City</th><th>Type</th><th>Revenue</th></tr></thead>
+              <tbody id="top-properties-table"><tr><td colspan="5" class="no-data">Load sample data to see analytics</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Booking Status</div></div>
+        <div class="card-body" style="padding:20px;" id="booking-status-chart">
+          <div style="text-align:center;color:var(--text-muted);padding:30px;font-size:13px;">Load data to view chart</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 Recent Bookings</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Property</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recent-bookings-table"><tr><td colspan="7" class="no-data">No bookings yet. Load sample data.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-properties">
+    <div class="filter-bar">
+      <input class="search-input" id="prop-search" placeholder="🔍 Search by title or city..." oninput="renderProperties()">
+      <select class="search-input" style="flex:0;width:140px" id="prop-filter-status" onchange="renderProperties()">
+        <option value="">All Status</option>
+        <option>Available</option><option>Booked</option><option>Sold</option><option>Under Construction</option>
+      </select>
+      <select class="search-input" style="flex:0;width:130px" id="prop-filter-type" onchange="renderProperties()">
+        <option value="">All Types</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('modal-add-property')">+ Add Property</button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏠 Properties Catalog</div>
+        <span id="prop-count" style="font-size:12px;color:var(--text-muted)">0 records</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Title</th><th>Type</th><th>Owner</th><th>City</th><th>Price (INR)</th><th>Listing</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="properties-table"><tr><td colspan="9" class="no-data">No properties. Click "+ Add Property" or load sample data.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-bookings">
+    <div class="filter-bar">
+      <select class="search-input" style="flex:0;width:140px" id="book-filter-status" onchange="renderBookings()">
+        <option value="">All Status</option>
+        <option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option>
+      </select>
+      <select class="search-input" style="flex:0;width:140px" id="book-filter-type" onchange="renderBookings()">
+        <option value="">All Types</option>
+        <option>Purchase</option><option>Rent</option><option>SiteVisit</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('modal-add-booking')">+ New Booking</button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📋 Bookings Management</div>
+        <span id="book-count" style="font-size:12px;color:var(--text-muted)">0 records</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Property</th><th>User</th><th>Date</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="bookings-table"><tr><td colspan="8" class="no-data">No bookings yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-payments">
+    <div class="filter-bar">
+      <select class="search-input" style="flex:0;width:140px" id="pay-filter-status" onchange="renderPayments()">
+        <option value="">All Status</option><option>Success</option><option>Failed</option><option>Pending</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('modal-add-payment')">+ Record Payment</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">💳 Payment Transactions</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Booking</th><th>Property</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="payments-table"><tr><td colspan="7" class="no-data">No payments recorded.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-reviews">
+    <div class="filter-bar">
+      <button class="btn btn-primary" onclick="openModal('modal-add-review')">+ Add Review</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">⭐ Customer Reviews</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Property</th><th>User</th><th>Rating</th><th>Review</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="reviews-table"><tr><td colspan="7" class="no-data">No reviews yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-users">
+    <div class="filter-bar">
+      <input class="search-input" id="user-search" placeholder="🔍 Search users..." oninput="renderUsers()">
+      <select class="search-input" style="flex:0;width:130px" id="user-filter-role" onchange="renderUsers()">
+        <option value="">All Roles</option><option>buyer</option><option>tenant</option><option>agent</option><option>admin</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('modal-add-user')">+ Add User</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">👤 Registered Users</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Action</th></tr></thead>
+            <tbody id="users-table"><tr><td colspan="7" class="no-data">No users registered.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-agents">
+    <div class="filter-bar">
+      <input class="search-input" id="agent-search" placeholder="🔍 Search agents..." oninput="renderAgents()">
+      <button class="btn btn-primary" onclick="openModal('modal-add-agent')">+ Add Agent</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🤝 Licensed Real Estate Agents</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Agency</th><th>Email</th><th>License No.</th><th>Joined</th><th>Action</th></tr></thead>
+            <tbody id="agents-table"><tr><td colspan="7" class="no-data">No agents registered.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-owners">
+    <div class="filter-bar">
+      <input class="search-input" id="owner-search" placeholder="🔍 Search owners..." oninput="renderOwners()">
+      <select class="search-input" style="flex:0;width:140px" id="owner-filter-type" onchange="renderOwners()">
+        <option value="">All Types</option><option>Individual</option><option>Builder</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('modal-add-owner')">+ Add Owner</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔑 Property Owners</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Email</th><th>City</th><th>Joined</th><th>Action</th></tr></thead>
+            <tbody id="owners-table"><tr><td colspan="7" class="no-data">No owners added.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-locations">
+    <div class="filter-bar">
+      <input class="search-input" id="loc-search" placeholder="🔍 Search locations..." oninput="renderLocations()">
+      <button class="btn btn-primary" onclick="openModal('modal-add-location')">+ Add Location</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📍 Location Master Data</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>City</th><th>State</th><th>Pincode</th><th>Locality</th><th>Country</th><th>Action</th></tr></thead>
+            <tbody id="locations-table"><tr><td colspan="7" class="no-data">No locations added.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-analytics">
+    <div class="analytics-grid">
+      <div class="chart-card">
+        <div class="chart-title">📊 Revenue by Property Type (INR Cr)</div>
+        <canvas id="chart-revenue" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🥧 Booking Status Distribution</div>
+        <canvas id="chart-booking-status" height="200"></canvas>
+      </div>
+    </div>
+    <div class="analytics-grid">
+      <div class="chart-card">
+        <div class="chart-title">🏙️ Top Locations by Revenue</div>
+        <canvas id="chart-locations" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">⭐ Property Ratings Overview</div>
+        <div id="ratings-list" style="padding:8px 0"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="page-sql">
+    <div class="tabs" id="sql-tabs">
+      <div class="tab active" onclick="showSqlTab(0)">Table Creation</div>
+      <div class="tab" onclick="showSqlTab(1)">Query 1: Full Listing</div>
+      <div class="tab" onclick="showSqlTab(2)">Query 2: Revenue</div>
+      <div class="tab" onclick="showSqlTab(3)">Query 3: Top Agents</div>
+      <div class="tab" onclick="showSqlTab(4)">Transaction (ACID)</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="sql-tab-title">CREATE TABLE Statements</div>
+        <button class="btn btn-ghost btn-sm" onclick="copySQL()">📋 Copy</button>
+      </div>
+      <div class="card-body" style="padding:16px">
+        <div class="sql-viewer" id="sql-viewer"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🗄️ Database Schema Summary</div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Table</th><th>Primary Key</th><th>Foreign Keys</th><th>Key Constraints</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><strong>USERS</strong></td><td>user_id</td><td>—</td><td>username UQ, email UQ, role ENUM</td><td>Auth & access control</td></tr>
+              <tr><td><strong>LOCATIONS</strong></td><td>location_id</td><td>—</td><td>—</td><td>Geo master data</td></tr>
+              <tr><td><strong>PROPERTY_TYPES</strong></td><td>type_id</td><td>parent_id (self-ref)</td><td>type_name UQ</td><td>Hierarchical classification</td></tr>
+              <tr><td><strong>OWNERS</strong></td><td>owner_id</td><td>—</td><td>contact_email UQ</td><td>Individual/Builder owners</td></tr>
+              <tr><td><strong>AGENTS</strong></td><td>agent_id</td><td>—</td><td>email UQ, license_no UQ</td><td>Licensed agents</td></tr>
+              <tr><td><strong>PROPERTIES</strong></td><td>property_id</td><td>type_id, owner_id, agent_id, location_id</td><td>price CHECK >=0, area CHECK >0</td><td>Central hub (5 FKs)</td></tr>
+              <tr><td><strong>BOOKINGS</strong></td><td>booking_id</td><td>property_id, user_id</td><td>total_amount CHECK >=0, status ENUM</td><td>Full lifecycle tracking</td></tr>
+              <tr><td><strong>PAYMENTS</strong></td><td>payment_id</td><td>booking_id (CASCADE)</td><td>amount CHECK >0</td><td>Multi-installment support</td></tr>
+              <tr><td><strong>REVIEWS</strong></td><td>review_id</td><td>property_id, user_id</td><td>rating CHECK 1-5, UNIQUE(user_id,property_id)</td><td>1 review/user/property</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modal-add-property">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🏠 Add New Property</div>
+      <button class="modal-close" onclick="closeModal('modal-add-property')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">Title *</label>
+          <input class="form-input" id="p-title" placeholder="e.g. 3BHK Apartment in Banjara Hills">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Property Type *</label>
+          <select class="form-input" id="p-type"><option value="">Select type...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner *</label>
+          <select class="form-input" id="p-owner"><option value="">Select owner...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Agent (Optional)</label>
+          <select class="form-input" id="p-agent"><option value="">No agent</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location *</label>
+          <select class="form-input" id="p-location"><option value="">Select location...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price (INR) *</label>
+          <input class="form-input" id="p-price" type="number" placeholder="e.g. 5000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Area (sq.ft) *</label>
+          <input class="form-input" id="p-area" type="number" placeholder="e.g. 1200">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bedrooms</label>
+          <input class="form-input" id="p-bedrooms" type="number" placeholder="e.g. 3">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Listing Type *</label>
+          <select class="form-input" id="p-listing"><option>Sale</option><option>Rent</option><option>Lease</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Furnishing</label>
+          <select class="form-input" id="p-furnishing"><option>Unfurnished</option><option>Semi-Furnished</option><option>Fully Furnished</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Availability Status</label>
+          <select class="form-input" id="p-status"><option>Available</option><option>Booked</option><option>Sold</option><option>Under Construction</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-property')">Cancel</button>
+      <button class="btn btn-primary" onclick="addProperty()">Add Property</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-booking">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📋 New Booking</div>
+      <button class="modal-close" onclick="closeModal('modal-add-booking')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Property *</label>
+          <select class="form-input" id="b-property"><option value="">Select property...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">User *</label>
+          <select class="form-input" id="b-user"><option value="">Select user...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Booking Type *</label>
+          <select class="form-input" id="b-type"><option>Purchase</option><option>Rent</option><option>SiteVisit</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Amount (INR) *</label>
+          <input class="form-input" id="b-amount" type="number" placeholder="e.g. 5000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-input" id="b-status"><option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option></select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" id="b-notes" placeholder="Optional notes..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-booking')">Cancel</button>
+      <button class="btn btn-primary" onclick="addBooking()">Create Booking</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-payment">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💳 Record Payment</div>
+      <button class="modal-close" onclick="closeModal('modal-add-payment')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Booking *</label>
+          <select class="form-input" id="pay-booking"><option value="">Select booking...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount (INR) *</label>
+          <input class="form-input" id="pay-amount" type="number" placeholder="e.g. 500000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-input" id="pay-method">
+            <option>Bank Transfer</option><option>UPI</option><option>Cheque</option><option>Cash</option><option>NEFT/RTGS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-input" id="pay-status"><option>Success</option><option>Pending</option><option>Failed</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-payment')">Cancel</button>
+      <button class="btn btn-primary" onclick="addPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-review">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⭐ Add Review</div>
+      <button class="modal-close" onclick="closeModal('modal-add-review')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Property *</label>
+          <select class="form-input" id="r-property"><option value="">Select property...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">User *</label>
+          <select class="form-input" id="r-user"><option value="">Select user...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rating (1-5) *</label>
+          <select class="form-input" id="r-rating">
+            <option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option>
+            <option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Review Text</label>
+          <textarea class="form-input" id="r-text" placeholder="Share your experience..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-review')">Cancel</button>
+      <button class="btn btn-primary" onclick="addReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-user">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👤 Register User</div>
+      <button class="modal-close" onclick="closeModal('modal-add-user')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Username *</label>
+          <input class="form-input" id="u-name" placeholder="e.g. rahul_sharma">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" id="u-email" type="email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" id="u-phone" placeholder="10-digit number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role *</label>
+          <select class="form-input" id="u-role"><option>buyer</option><option>tenant</option><option>agent</option><option>admin</option></select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Password</label>
+          <input class="form-input" id="u-pass" type="password" placeholder="Stored as bcrypt hash">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-user')">Cancel</button>
+      <button class="btn btn-primary" onclick="addUser()">Register</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-agent">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🤝 Register Agent</div>
+      <button class="modal-close" onclick="closeModal('modal-add-agent')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Agent Name *</label>
+          <input class="form-input" id="ag-name" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" id="ag-email" type="email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Agency Name</label>
+          <input class="form-input" id="ag-agency" placeholder="e.g. PropStar Realty">
+        </div>
+        <div class="form-group">
+          <label class="form-label">License No. *</label>
+          <input class="form-input" id="ag-license" placeholder="e.g. MH/REA/2023/001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" id="ag-phone" placeholder="10-digit number">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-agent')">Cancel</button>
+      <button class="btn btn-primary" onclick="addAgent()">Register Agent</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-owner">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Add Owner</div>
+      <button class="modal-close" onclick="closeModal('modal-add-owner')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Name / Company *</label>
+          <input class="form-input" id="ow-name" placeholder="Full name or company">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" id="ow-email" type="email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner Type *</label>
+          <select class="form-input" id="ow-type"><option>Individual</option><option>Builder</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input class="form-input" id="ow-city" placeholder="e.g. Mumbai">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" id="ow-phone" placeholder="10-digit number">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-owner')">Cancel</button>
+      <button class="btn btn-primary" onclick="addOwner()">Add Owner</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-location">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📍 Add Location</div>
+      <button class="modal-close" onclick="closeModal('modal-add-location')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">City *</label>
+          <input class="form-input" id="l-city" placeholder="e.g. Hyderabad">
+        </div>
+        <div class="form-group">
+          <label class="form-label">State *</label>
+          <input class="form-input" id="l-state" placeholder="e.g. Telangana">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pincode *</label>
+          <input class="form-input" id="l-pin" placeholder="e.g. 500034">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Locality</label>
+          <input class="form-input" id="l-locality" placeholder="e.g. Banjara Hills">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <input class="form-input" id="l-country" value="India">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-location')">Cancel</button>
+      <button class="btn btn-primary" onclick="addLocation()">Add Location</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="./js/app.js" defer></script>
+</body>
+</html>
