@@ -40,60 +40,45 @@ CREATE TABLE IF NOT EXISTS property_types (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_property_types_parent
     FOREIGN KEY (parent_id) REFERENCES property_types(type_id)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS owners (
   owner_id INT AUTO_INCREMENT PRIMARY KEY,
   owner_name VARCHAR(120) NOT NULL,
-  contact_email VARCHAR(100) NOT NULL UNIQUE,
-  phone VARCHAR(15),
-  owner_type ENUM('Individual', 'Builder') NOT NULL,
-  city VARCHAR(80),
+  owner_type ENUM('individual', 'builder', 'company') NOT NULL DEFAULT 'individual',
+  contact_email VARCHAR(100) NOT NULL,
+  contact_phone VARCHAR(15) NOT NULL,
+  city VARCHAR(100),
   joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS agents (
   agent_id INT AUTO_INCREMENT PRIMARY KEY,
   agent_name VARCHAR(120) NOT NULL,
+  agency_name VARCHAR(150),
   contact_email VARCHAR(100) NOT NULL UNIQUE,
-  phone VARCHAR(15),
-  agency_name VARCHAR(120),
+  contact_phone VARCHAR(15) NOT NULL,
   license_no VARCHAR(50) NOT NULL UNIQUE,
   joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS properties (
   property_id INT AUTO_INCREMENT PRIMARY KEY,
-  type_id INT NOT NULL,
   owner_id INT NOT NULL,
-  agent_id INT,
   location_id INT NOT NULL,
+  type_id INT NOT NULL,
+  agent_id INT,
   title VARCHAR(200) NOT NULL,
-  price DECIMAL(14,2) NOT NULL,
-  area_sqft DECIMAL(10,2) NOT NULL,
-  bedrooms TINYINT DEFAULT 0,
-  furnishing ENUM('Unfurnished', 'Semi-Furnished', 'Fully Furnished') DEFAULT 'Unfurnished',
-  listing_type ENUM('Sale', 'Rent', 'Lease') NOT NULL,
-  availability_status ENUM('Available', 'Booked', 'Sold', 'Under Construction')
-    NOT NULL DEFAULT 'Available',
+  description TEXT,
+  price DECIMAL(15, 2) NOT NULL,
+  area_sqft INT,
+  listing_type ENUM('sale', 'rent', 'lease') NOT NULL,
+  availability_status ENUM('available', 'booked', 'sold') NOT NULL DEFAULT 'available',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT chk_properties_price CHECK (price >= 0),
-  CONSTRAINT chk_properties_area CHECK (area_sqft > 0),
-  CONSTRAINT fk_properties_type
-    FOREIGN KEY (type_id) REFERENCES property_types(type_id)
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_properties_owner
-    FOREIGN KEY (owner_id) REFERENCES owners(owner_id)
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_properties_agent
-    FOREIGN KEY (agent_id) REFERENCES agents(agent_id)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_properties_location
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
-    ON UPDATE CASCADE
+  CONSTRAINT fk_properties_owner FOREIGN KEY (owner_id) REFERENCES owners(owner_id),
+  CONSTRAINT fk_properties_location FOREIGN KEY (location_id) REFERENCES locations(location_id),
+  CONSTRAINT fk_properties_type FOREIGN KEY (type_id) REFERENCES property_types(type_id),
+  CONSTRAINT fk_properties_agent FOREIGN KEY (agent_id) REFERENCES agents(agent_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS bookings (
@@ -101,54 +86,35 @@ CREATE TABLE IF NOT EXISTS bookings (
   property_id INT NOT NULL,
   user_id INT NOT NULL,
   booking_date DATE NOT NULL,
-  booking_type ENUM('Purchase', 'Rent', 'SiteVisit') NOT NULL,
-  total_amount DECIMAL(14,2) NOT NULL DEFAULT 0,
-  status ENUM('Pending', 'Confirmed', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Pending',
-  notes TEXT,
-  CONSTRAINT chk_bookings_amount CHECK (total_amount >= 0),
-  CONSTRAINT fk_bookings_property
-    FOREIGN KEY (property_id) REFERENCES properties(property_id)
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_bookings_user
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-    ON UPDATE CASCADE
+  booking_type ENUM('visit', 'reservation', 'sale_agreement') NOT NULL,
+  status ENUM('pending', 'confirmed', 'cancelled', 'completed') NOT NULL DEFAULT 'pending',
+  total_amount DECIMAL(15, 2) NOT NULL,
+  CONSTRAINT fk_bookings_property FOREIGN KEY (property_id) REFERENCES properties(property_id),
+  CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS payments (
   payment_id INT AUTO_INCREMENT PRIMARY KEY,
   booking_id INT NOT NULL,
-  amount DECIMAL(14,2) NOT NULL,
+  amount DECIMAL(15, 2) NOT NULL,
   payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  payment_method VARCHAR(50),
-  status ENUM('Success', 'Failed', 'Pending') NOT NULL DEFAULT 'Pending',
-  CONSTRAINT chk_payments_amount CHECK (amount > 0),
-  CONSTRAINT fk_payments_booking
-    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  payment_method ENUM('cash', 'card', 'bank_transfer', 'upi') NOT NULL,
+  status ENUM('success', 'pending', 'failed') NOT NULL DEFAULT 'success',
+  CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS reviews (
   review_id INT AUTO_INCREMENT PRIMARY KEY,
   property_id INT NOT NULL,
   user_id INT NOT NULL,
-  rating TINYINT NOT NULL,
+  rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
   review_text TEXT,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT chk_reviews_rating CHECK (rating BETWEEN 1 AND 5),
-  CONSTRAINT uq_reviews_user_property UNIQUE (user_id, property_id),
-  CONSTRAINT fk_reviews_property
-    FOREIGN KEY (property_id) REFERENCES properties(property_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_reviews_user
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  CONSTRAINT fk_reviews_property FOREIGN KEY (property_id) REFERENCES properties(property_id),
+  CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
-CREATE INDEX idx_properties_city_type_status
-  ON properties (location_id, type_id, availability_status);
-CREATE INDEX idx_properties_price ON properties (price);
-CREATE INDEX idx_reviews_property ON reviews (property_id);
-CREATE INDEX idx_bookings_status ON bookings (status);
+-- Indexes for performance
+CREATE INDEX idx_properties_price ON properties(price);
+CREATE INDEX idx_properties_city_type_status ON properties(location_id, type_id, availability_status);
+CREATE INDEX idx_bookings_date ON bookings(booking_date);
