@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS owners (
   owner_name VARCHAR(120) NOT NULL,
   owner_type ENUM('individual', 'builder', 'company') NOT NULL DEFAULT 'individual',
   contact_email VARCHAR(100) NOT NULL,
-  contact_phone VARCHAR(15) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
   city VARCHAR(100),
   joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS agents (
   agent_name VARCHAR(120) NOT NULL,
   agency_name VARCHAR(150),
   contact_email VARCHAR(100) NOT NULL UNIQUE,
-  contact_phone VARCHAR(15) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
   license_no VARCHAR(50) NOT NULL UNIQUE,
   joined_date DATE NOT NULL
 ) ENGINE=InnoDB;
