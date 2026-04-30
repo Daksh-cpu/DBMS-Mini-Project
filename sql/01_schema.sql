@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS property_types (
 CREATE TABLE IF NOT EXISTS owners (
   owner_id INT AUTO_INCREMENT PRIMARY KEY,
   owner_name VARCHAR(120) NOT NULL,
-  owner_type ENUM('individual', 'builder', 'company') NOT NULL DEFAULT 'individual',
+  owner_type ENUM('Individual', 'Builder', 'Company') NOT NULL DEFAULT 'Individual',
   contact_email VARCHAR(100) NOT NULL,
   phone VARCHAR(15) NOT NULL,
   city VARCHAR(100),
@@ -72,8 +72,10 @@ CREATE TABLE IF NOT EXISTS properties (
   description TEXT,
   price DECIMAL(15, 2) NOT NULL,
   area_sqft INT,
-  listing_type ENUM('sale', 'rent', 'lease') NOT NULL,
-  availability_status ENUM('available', 'booked', 'sold') NOT NULL DEFAULT 'available',
+  bedrooms INT DEFAULT 0,
+  furnishing VARCHAR(100),
+  listing_type ENUM('Sale', 'Rent', 'Lease') NOT NULL,
+  availability_status ENUM('Available', 'Booked', 'Sold') NOT NULL DEFAULT 'Available',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_properties_owner FOREIGN KEY (owner_id) REFERENCES owners(owner_id),
   CONSTRAINT fk_properties_location FOREIGN KEY (location_id) REFERENCES locations(location_id),
@@ -86,9 +88,10 @@ CREATE TABLE IF NOT EXISTS bookings (
   property_id INT NOT NULL,
   user_id INT NOT NULL,
   booking_date DATE NOT NULL,
-  booking_type ENUM('visit', 'reservation', 'sale_agreement') NOT NULL,
-  status ENUM('pending', 'confirmed', 'cancelled', 'completed') NOT NULL DEFAULT 'pending',
+  booking_type ENUM('Purchase', 'Rent', 'SiteVisit', 'Reservation') NOT NULL,
+  status ENUM('Pending', 'Confirmed', 'Cancelled', 'Completed') NOT NULL DEFAULT 'Pending',
   total_amount DECIMAL(15, 2) NOT NULL,
+  notes TEXT,
   CONSTRAINT fk_bookings_property FOREIGN KEY (property_id) REFERENCES properties(property_id),
   CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
@@ -98,8 +101,8 @@ CREATE TABLE IF NOT EXISTS payments (
   booking_id INT NOT NULL,
   amount DECIMAL(15, 2) NOT NULL,
   payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  payment_method ENUM('cash', 'card', 'bank_transfer', 'upi') NOT NULL,
-  status ENUM('success', 'pending', 'failed') NOT NULL DEFAULT 'success',
+  payment_method ENUM('Cash', 'Card', 'Bank Transfer', 'NEFT/RTGS', 'UPI', 'Cheque') NOT NULL,
+  status ENUM('Success', 'Pending', 'Failed') NOT NULL DEFAULT 'Success',
   CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
 ) ENGINE=InnoDB;
 
