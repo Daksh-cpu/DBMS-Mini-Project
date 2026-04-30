@@ -29,15 +29,11 @@ let pool;
 
 async function initDB() {
     try {
-        console.log('🔄 Connecting to MySQL...');
-        const tempConn = await mysql.createConnection(poolConfig);
+        console.log('🔄 Connecting to MySQL Pool...');
         
         const dbName = process.env.DB_NAME || 'real_estate_db';
-        await tempConn.query(`CREATE DATABASE IF NOT EXISTS ${dbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-        console.log(`✅ Database "${dbName}" ensured.`);
-        await tempConn.end();
-
-        // Now create the pool with the database selected
+        
+        // Create the pool directly
         pool = mysql.createPool({
             ...poolConfig,
             database: dbName,
@@ -47,7 +43,7 @@ async function initDB() {
         });
 
         const connection = await pool.getConnection();
-        console.log('✅ MySQL Pool Connected!');
+        console.log(`✅ MySQL Connected to database: "${dbName}"`);
 
         // Check if tables exist
         const [tables] = await connection.query('SHOW TABLES');
@@ -65,11 +61,6 @@ async function initDB() {
         console.log('✅ Database initialization complete!');
     } catch (err) {
         console.error('❌ DB Init failed:', err.message);
-        if (err.code === 'ER_ACCESS_DENIED_ERROR') {
-            console.error('👉 Tip: Check your DB_PASSWORD in the .env file!');
-        } else if (err.code === 'ECONNREFUSED') {
-            console.error('👉 Tip: Make sure your MySQL server is running!');
-        }
     }
 }
 
