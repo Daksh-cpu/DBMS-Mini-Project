@@ -6,10 +6,10 @@ A production-ready, full-stack Real Estate Management System built with **Node.j
 **[View Live Demo Here](https://github.com/Daksh-cpu/DBMS-Mini-Project)** *(Update this link after deploying to Render/Railway)*
 
 ### 📊 Dashboard Preview
-![Dashboard](preview_images/Dashboard.png)
+![Dashboard](preview_images/dashboard.png)
 
 ### 📈 Analytics & Insights
-![Analytics](preview_images/Analytics.png)
+![Analytics](preview_images/analytics.png)
 
 ## 🚀 Key Features
 
