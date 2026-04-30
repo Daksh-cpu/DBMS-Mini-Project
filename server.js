@@ -84,7 +84,7 @@ app.get('/api/stats', async (req, res) => {
         const [[propCount]] = await pool.query('SELECT COUNT(*) as count FROM properties');
         const [[bookCount]] = await pool.query('SELECT COUNT(*) as count FROM bookings');
         const [[userCount]] = await pool.query('SELECT COUNT(*) as count FROM users');
-        const [[revSum]] = await pool.query('SELECT COALESCE(SUM(total_amount), 0) as total FROM bookings WHERE status IN ("Confirmed", "Completed")');
+        const [[revSum]] = await pool.query("SELECT COALESCE(SUM(total_amount), 0) as total FROM bookings WHERE status IN ('Confirmed', 'Completed')");
 
         res.json({
             properties: propCount.count,
