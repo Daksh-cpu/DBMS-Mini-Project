@@ -1,7 +1,4 @@
--- 02_seed_data.sql
 -- Seed data aligned with dashboard sample data
-
-USE real_estate_db;
 
 INSERT INTO locations (city, state, pincode, locality, country) VALUES
 ('Hyderabad', 'Telangana', '500034', 'Banjara Hills', 'India'),
